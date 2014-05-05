@@ -347,7 +347,15 @@ public class BluetoothSerialService {
             try {
                 if (secure) {
                     // tmp = device.createRfcommSocketToServiceRecord(MY_UUID_SECURE);
-                    tmp = device.createRfcommSocketToServiceRecord(UUID_SPP);
+                    // tmp = device.createRfcommSocketToServiceRecord(UUID_SPP);
+
+                    Log.i(TAG, "**** Dirty hack to get at createRfcommSocket method in Android");
+                    try{
+                        Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+                        tmp = (BluetoothSocket) m.invoke(device, 11);
+                    } catch (Exception e) {
+                        Log.e(TAG, "**** Dirty hack did BAD THINGS: ", e);
+                    }
                 } else {
                     //tmp = device.createInsecureRfcommSocketToServiceRecord(MY_UUID_INSECURE);
                     tmp = device.createInsecureRfcommSocketToServiceRecord(UUID_SPP);
